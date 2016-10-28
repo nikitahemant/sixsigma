@@ -6,7 +6,7 @@
 package server;
 
 /**
- *
+ * This is the Model
  * @author Nikita
  */
 public class KTTModel {
