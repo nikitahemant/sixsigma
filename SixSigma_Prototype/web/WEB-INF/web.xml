@@ -1,6 +1,46 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <web-app version="3.0" xmlns="http://java.sun.com/xml/ns/javaee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd">
-     <welcome-file-list>
-        <welcome-file>home.jsp</welcome-file>
+    <servlet>
+        <servlet-name>welcome</servlet-name>
+        <servlet-class>server.welcome</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>summary</servlet-name>
+        <servlet-class>server.summary</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>detail</servlet-name>
+        <servlet-class>server.detail</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>intelreports</servlet-name>
+        <servlet-class>server.intelreports</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>customreports</servlet-name>
+        <servlet-class>server.customreports</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>welcome</servlet-name>
+        <url-pattern>/welcome</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>summary</servlet-name>
+        <url-pattern>/summary</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>detail</servlet-name>
+        <url-pattern>/detail</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>intelreports</servlet-name>
+        <url-pattern>/intelreports</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>customreports</servlet-name>
+        <url-pattern>/customreports</url-pattern>
+    </servlet-mapping>
+    <welcome-file-list>
+        <welcome-file>welcome.jsp</welcome-file>
     </welcome-file-list>
 </web-app>
