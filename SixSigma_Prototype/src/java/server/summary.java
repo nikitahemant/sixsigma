@@ -5,7 +5,11 @@
  */
 package server;
 
+import com.google.gson.Gson;
+import model.OrgDaily;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -19,12 +23,12 @@ import javax.servlet.http.HttpServletResponse;
 @WebServlet(name = "summary", urlPatterns = {"/summary"})
 public class summary extends HttpServlet {
 
-    databaseModel dbm = null;  // The "business model" for this app
+    public static List<OrgDaily> orgDailyData;
 
     // Initiate this servlet by instantiating the model that it will use.
     @Override
     public void init() {
-        dbm = new databaseModel();
+        orgDailyData = new ArrayList<OrgDaily>();
     }
     
 
@@ -40,26 +44,19 @@ public class summary extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        //calls to dbm can be made like 
-        //dbm.getdailydata(new Date());
+            
+        orgDailyData = getOrgDailyData();
+                
+        Gson gson = new Gson();
+
+	String jsonString = gson.toJson(orgDailyData);
+
+	response.setContentType("application/json");
+
+	response.getWriter().write(jsonString);
    
     }
     
-
-    /**
-     * Handles the HTTP <code>POST</code> method.
-     *
-     * @param request servlet request
-     * @param response servlet response
-     * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException if an I/O error occurs
-     */
-    @Override
-    protected void doPost(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
-        
-    }
-
     /**
      * Returns a short description of the servlet.
      *
@@ -69,5 +66,18 @@ public class summary extends HttpServlet {
     public String getServletInfo() {
         return "Short description";
     }// </editor-fold>
+
+    private List<OrgDaily> getOrgDailyData() {
+        List<OrgDaily> tempData = new ArrayList<OrgDaily>();
+	
+        OrgDaily d1 = new OrgDaily("Oct-15",  33474.04); 
+	tempData.add(d1);
+        
+        OrgDaily d2 = new OrgDaily("Nov-15",  22580.02);
+        tempData.add(d2);
+                
+        return tempData;
+
+    }
 
 }
