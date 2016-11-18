@@ -5,9 +5,14 @@
  */
 package server;
 
+import server.Proxy;
 import com.google.gson.Gson;
 import model.OrgDaily;
 import java.io.IOException;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.ResultSet;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 import javax.servlet.ServletException;
@@ -70,11 +75,46 @@ public class summary extends HttpServlet {
     private List<OrgDaily> getOrgDailyData() {
         List<OrgDaily> tempData = new ArrayList<OrgDaily>();
 	
-        OrgDaily d1 = new OrgDaily("Oct-15",  33474.04); 
-	tempData.add(d1);
-        
-        OrgDaily d2 = new OrgDaily("Nov-15",  22580.02);
-        tempData.add(d2);
+        try
+        {
+          String strSshUser = "jason";                  // SSH loging username
+          String strSshPassword = "jason";                   // SSH login password
+          String strSshHost = "128.2.144.201";          // hostname or ip or SSH server
+          int nSshPort = 22;                                    // remote SSH host port number
+          String strRemoteHost = "localhost";  // hostname or ip of your database server
+          int nLocalPort = 3366;                                // local port number use to bind SSH tunnel
+          int nRemotePort = 3306;                               // remote port number of your database 
+          String strDbUser = "root";                    // database loging username
+          String strDbPassword = "root";                    // database login password
+
+          Proxy.doSshTunnel(strSshUser, strSshPassword, strSshHost, nSshPort, strRemoteHost, nLocalPort, nRemotePort);
+
+          Class.forName("com.mysql.jdbc.Driver");
+          Connection con = DriverManager.getConnection("jdbc:mysql://localhost:"+nLocalPort, strDbUser, strDbPassword);
+
+          Statement s = con.createStatement();
+          s.executeQuery("select TRANSACTION_DATE, ENTRY_AMOUNT from capstone.data2014 " +
+            "where COMPANY_NUMBER='9' and ENTRY_AMOUNT_SIGN = 'p' " +
+            "order by TRANSACTION_DATE");
+            ResultSet rs = s.getResultSet();
+            while (rs.next()) {
+
+                String dt = rs.getString("TRANSACTION_DATE");
+                String em = rs.getString("ENTRY_AMOUNT");
+                   
+                OrgDaily d1 = new OrgDaily(dt,Long.parseLong(em)); 
+                tempData.add(d1);
+            }
+            
+            rs.close();
+            s.close();
+            
+            con.close();
+        }
+        catch(Exception e )
+        {
+          e.printStackTrace();
+        }
                 
         return tempData;
 

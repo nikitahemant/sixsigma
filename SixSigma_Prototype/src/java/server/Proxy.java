@@ -19,19 +19,19 @@ import java.sql.Statement;
  */
 public class Proxy {
     
-    private static void doSshTunnel( String strSshUser, String strSshPassword, String strSshHost, int nSshPort, String strRemoteHost, int nLocalPort, int nRemotePort ) throws JSchException
-  {
-    final JSch jsch = new JSch();
-    Session session = jsch.getSession( strSshUser, strSshHost, 22 );
-    session.setPassword( strSshPassword );
-     
-    final Properties config = new Properties();
-    config.put( "StrictHostKeyChecking", "no" );
-    session.setConfig( config );
-     
-    session.connect();
-    session.setPortForwardingL(nLocalPort, strRemoteHost, nRemotePort);
-  }
+    static void doSshTunnel( String strSshUser, String strSshPassword, String strSshHost, int nSshPort, String strRemoteHost, int nLocalPort, int nRemotePort ) throws JSchException
+    {
+        final JSch jsch = new JSch();
+        Session session = jsch.getSession( strSshUser, strSshHost, 22 );
+        session.setPassword( strSshPassword );
+
+        final Properties config = new Properties();
+        config.put( "StrictHostKeyChecking", "no" );
+        session.setConfig( config );
+
+        session.connect();
+        session.setPortForwardingL(nLocalPort, strRemoteHost, nRemotePort);
+    }
     public static void main(String[] args)
     {
     try
@@ -52,9 +52,9 @@ public class Proxy {
       Connection con = DriverManager.getConnection("jdbc:mysql://localhost:"+nLocalPort, strDbUser, strDbPassword);
       
       Statement s = con.createStatement();
-      s.executeQuery("select  TRANSACTION_DATE, ENTRY_AMOUNT from capstone.data2014 " +
+      s.executeQuery("select TRANSACTION_DATE, ENTRY_AMOUNT from capstone.data2014 " +
         "where COMPANY_NUMBER='9' and ENTRY_AMOUNT_SIGN = 'p' " +
-        "group by TRANSACTION_DATE");
+        "order by TRANSACTION_DATE");
         ResultSet rs = s.getResultSet();
             int i = 0;
             while (rs.next()) {
@@ -79,47 +79,5 @@ public class Proxy {
       System.exit(0);
     }
   }
-//    public static void main(String... args)
-//    {
-//        String host = "keybank.heinz.cmu.edu";
-//        String user="jason";
-//        String password="jason";
-//
-//        final String dbuserName = "root";
-//        final String dbpassword = "root";
-//        final String dburl = "jdbc:mysql://localhost:3306/";
-//        final String db_name = "capstone";
-//
-//        Connection db = null;
-//        Session session= null;
-//
-//        System.out.println("Initializing Mysql...");
-//        try {
-//            java.util.Properties config = new java.util.Properties();
-//            config.put("StrictHostKeyChecking", "no");
-//            JSch jsch = new JSch();
-//            session=jsch.getSession(user, host, 22);
-//            session.setPassword(password);
-//            session.setConfig(config);
-//            session.connect();
-//            System.out.println("SSH Connected");
-//
-//            String url = dburl+ db_name+"?useSSL=false";
-//            Class.forName("com.mysql.jdbc.Driver").newInstance();
-//            db = DriverManager.getConnection(url, dbuserName, dbpassword);
-//            System.out.println("DB connection successful for database \"" + db_name + "\"");
-//        } catch (Exception e) {
-//            System.err.println("DB connection failed: " + e.getMessage());
-//            System.exit(1);
-//        } finally {
-//            if (db != null) {
-//                try {
-//                    db.close();
-//                    System.out.println("DB connection closed.");
-//                } catch (Exception e) {
-//                    System.err.println("DB connection close error: " + e.getMessage());
-//                }
-//            }
-//        }
-//    }
+
 }
