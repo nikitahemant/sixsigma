@@ -7,6 +7,9 @@ package server;
 
 import server.Proxy;
 import com.google.gson.Gson;
+import com.jcraft.jsch.JSch;
+import com.jcraft.jsch.JSchException;
+import com.jcraft.jsch.Session;
 import model.OrgDaily;
 import java.io.IOException;
 import java.sql.Connection;
@@ -16,6 +19,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Properties;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.servlet.ServletException;
@@ -69,13 +73,13 @@ public class summary extends HttpServlet {
    
         orgMonthlyData = getOrgMonthlyData(con);   
 	String jsonMonthlyString = gson.toJson(orgMonthlyData);
-	response.setContentType("application/json");
-	response.getWriter().write(jsonMonthlyString);
+//	response.setContentType("application/json");
+//	response.getWriter().write(jsonMonthlyString);
         
         orgCategoryData = getOrgCategoryData(con);   
 	String jsonCategoryString = gson.toJson(orgCategoryData);
-	response.setContentType("application/json");
-	response.getWriter().write(jsonCategoryString);
+//	response.setContentType("application/json");
+//	response.getWriter().write(jsonCategoryString);
         
         dbClose(con);
     }
@@ -105,7 +109,7 @@ public class summary extends HttpServlet {
                 String dt = rs.getString("TRANSACTION_DATE");
                 String em = rs.getString("ENTRY_AMOUNT");
                    
-                OrgDaily d1 = new OrgDaily(dt,Long.parseLong(em)); 
+                OrgDaily d1 = new OrgDaily(dt,Double.parseDouble(em)); 
                 tempData.add(d1);
             }
             
@@ -137,7 +141,7 @@ public class summary extends HttpServlet {
                 String dt = rs.getString("TRANSACTION_DATE");
                 String em = rs.getString("ENTRY_AMOUNT");
                    
-                OrgMonthly d1 = new OrgMonthly(dt,Long.parseLong(em)); 
+                OrgMonthly d1 = new OrgMonthly(dt,Double.parseDouble(em)); 
                 tempData.add(d1);
             }
             
@@ -169,7 +173,7 @@ public class summary extends HttpServlet {
                 String dt = rs.getString("TRANSACTION_DATE");
                 String em = rs.getString("ENTRY_AMOUNT");
                    
-                OrgCategory d1 = new OrgCategory(dt,Long.parseLong(em)); 
+                OrgCategory d1 = new OrgCategory(dt,Double.parseDouble(em)); 
                 tempData.add(d1);
             }
             
@@ -200,7 +204,7 @@ public class summary extends HttpServlet {
           String strDbUser = "root";                    // database loging username
           String strDbPassword = "root";                    // database login password
 
-          Proxy.doSshTunnel(strSshUser, strSshPassword, strSshHost, nSshPort, strRemoteHost, nLocalPort, nRemotePort);
+          summary.doSshTunnel(strSshUser, strSshPassword, strSshHost, nSshPort, strRemoteHost, nLocalPort, nRemotePort);
 
           Class.forName("com.mysql.jdbc.Driver");
           con = DriverManager.getConnection("jdbc:mysql://localhost:"+nLocalPort, strDbUser, strDbPassword);
@@ -223,6 +227,20 @@ public class summary extends HttpServlet {
             Logger.getLogger(summary.class.getName()).log(Level.SEVERE, null, ex);
         }
           
+    }
+    
+    static void doSshTunnel( String strSshUser, String strSshPassword, String strSshHost, int nSshPort, String strRemoteHost, int nLocalPort, int nRemotePort ) throws JSchException
+    {
+        final JSch jsch = new JSch();
+        Session session = jsch.getSession( strSshUser, strSshHost, 22 );
+        session.setPassword( strSshPassword );
+
+        final Properties config = new Properties();
+        config.put( "StrictHostKeyChecking", "no" );
+        session.setConfig( config );
+
+        session.connect();
+        session.setPortForwardingL(nLocalPort, strRemoteHost, nRemotePort);
     }
     
 

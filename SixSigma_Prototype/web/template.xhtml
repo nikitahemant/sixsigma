@@ -1,0 +1,104 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:ui="http://java.sun.com/jsf/facelets">
+
+    <h:head>
+<!--        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+        <link href="./resources/css/default.css" rel="stylesheet" type="text/css" />
+        <link href="./resources/css/cssLayout.css" rel="stylesheet" type="text/css" />
+        <title>Key Bank Test</title>-->
+          <title>Key2Purchase Template</title>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"/>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+  <style>
+    /* Remove the navbar's default margin-bottom and rounded borders */
+    .navbar {
+      margin-bottom: 0;
+      border-radius: 0;
+      background-color: #ca0813;
+      border-color: #030033;
+      font-color: #FFFFFF;
+
+    }
+    
+    /* Add a gray background color and some padding to the footer */
+    footer {
+      background-color: #ca0813;
+      padding: 25px;
+    }
+      </style>
+    </h:head>
+
+    <h:body>
+        <nav class="navbar navbar-inverse">
+        <div class="container-fluid">
+          <div class="navbar-header">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#myNavbar">
+              <span class="icon-bar"></span>
+              <span class="icon-bar"></span>
+              <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="#">Key2Purchase</a>
+          </div>
+          <div class="collapse navbar-collapse" id="myNavbar">
+            <ul class="nav navbar-nav">
+              <li class="active"><a href="#">Home</a></li>
+              <li><a href="summary.html">Summary</a></li>
+              <li><a href="accounts.html">Accounts</a></li>
+              <li><a href="#">Contact</a></li>
+            </ul>
+            <ul class="nav navbar-nav navbar-right">
+              <li><a href="#"><span class="glyphicon glyphicon-log-in"></span> Login</a></li>
+            </ul>
+          </div>
+        </div>
+      </nav>
+        
+        <div class="jumbotron">
+  <div class="container text-center">
+    <h1>Key2Purchase Web Portal</h1>
+    <p> the best online banking experience</p>
+  </div>
+</div>
+  
+<div class="container-fluid bg-3 text-center">
+  <h3>Intelligient Dashboard</h3><br />
+  <div class="row">
+
+    <div class="col-sm-4">
+      <p>Industry Benchmark</p>
+      <div id="chart_div"></div>
+    </div>
+
+     <div class="col-sm-4">
+      <p>Monthly Spending</p>
+        <div id="chart_div2"></div>
+    </div>
+
+     <div class="col-sm-4">
+      <p>Daily Spending</p>
+        <!--<ui:insert name="graph">Graph</ui:insert>-->
+        <div id="chart_div3"></div>
+    </div>    
+  </div>
+</div>
+
+<!--        <div id="top" class="top">
+            <ui:insert name="top">Top</ui:insert>
+        </div>
+
+        <div id="content" class="center_content">
+            <ui:insert name="content">Content</ui:insert>
+        </div>-->
+
+        <div id="graph" class="center_content">
+            <ui:insert name="graph">Graph</ui:insert>
+        </div>
+    </h:body>
+
+</html>

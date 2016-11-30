@@ -1,0 +1,44 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui"
+      template="./template.xhtml"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:c="http://java.sun.com/jsp/jstl/core">
+
+<!--    <ui:define name="top">
+        <h1>Test  </h1> 
+    </ui:define>
+
+    <ui:define name="content">
+       
+        <ul>
+
+     <li><h:link value="Javascript" outcome="js" /> </li>  <br/>
+     <li><h:link value="Java " outcome="/GraficasDesdeJava/menu" /> </li> <br/> 
+     <li><h:link value="Primefaces" outcome="prime" /> </li> <br/>
+     
+     <li><h:link value="Java" outcome="java"/></li> <br/>
+
+
+
+     
+     </ul>
+ 
+        
+        
+    </ui:define>-->
+    
+     <ui:define name="graph">
+         <div id="student-bar-chart"></div>
+ <div id="chart-line" style="width: 900px; height: 500px;"></div>
+        <script type="text/javascript" src="./resources/js/jquery.min.js"></script>
+		<script type="text/javascript" src="./resources/js/jsapi.js"></script>
+		<script type="text/javascript" src="./resources/js/LineChartJava_1.js"></script>
+    </ui:define>
+
+       
+</ui:composition>
