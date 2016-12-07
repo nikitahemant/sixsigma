@@ -37,6 +37,8 @@ import model.OrgMonthly;
 @WebServlet(name = "summary", urlPatterns = {"/summary"})
 public class summary extends HttpServlet {
 
+    public static Connection con = null;
+    public static Session sess = null;
     public static List<OrgDaily> orgDailyData;
     public static List<OrgMonthly> orgMonthlyData;
     public static List<OrgCategory> orgCategoryData;
@@ -63,7 +65,7 @@ public class summary extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
             
-        Connection con = dbConnect();
+        con = dbConnect();
         Gson gson = new Gson();
         
         orgDailyData = getOrgDailyData(con);   
@@ -72,15 +74,15 @@ public class summary extends HttpServlet {
 	response.getWriter().write(jsonDailyString);
    
         orgMonthlyData = getOrgMonthlyData(con);   
-	String jsonMonthlyString = gson.toJson(orgMonthlyData);
+//	String jsonMonthlyString = gson.toJson(orgMonthlyData);
 //	response.setContentType("application/json");
 //	response.getWriter().write(jsonMonthlyString);
         
         orgCategoryData = getOrgCategoryData(con);   
-	String jsonCategoryString = gson.toJson(orgCategoryData);
+//	String jsonCategoryString = gson.toJson(orgCategoryData);
 //	response.setContentType("application/json");
 //	response.getWriter().write(jsonCategoryString);
-        
+        System.out.println("Closing connection");
         dbClose(con);
     }
     
@@ -100,14 +102,14 @@ public class summary extends HttpServlet {
         try
         {
           Statement s = con.createStatement();
-          s.executeQuery("select TRANSACTION_DATE, ENTRY_AMOUNT from capstone.data2014 " +
-            "where COMPANY_NUMBER='9' and ENTRY_AMOUNT_SIGN = 'p' " +
-            "order by TRANSACTION_DATE");
+          s.executeQuery("select PROC_DATE AS TDATE, ROUND(SUM(ENTRY_AMOUNT),2) AS AMT from capstone.data2014    "
+                  + "where COMPANY_NUMBER='9' and ENTRY_AMOUNT_SIGN = 'p'"
+                  + "GROUP BY PROC_DATE ORDER BY PROC_DATE desc LIMIT 7");
             ResultSet rs = s.getResultSet();
             while (rs.next()) {
 
-                String dt = rs.getString("TRANSACTION_DATE");
-                String em = rs.getString("ENTRY_AMOUNT");
+                String dt = rs.getString("TDATE");
+                String em = rs.getString("AMT");
                    
                 OrgDaily d1 = new OrgDaily(dt,Double.parseDouble(em)); 
                 tempData.add(d1);
@@ -132,14 +134,15 @@ public class summary extends HttpServlet {
         try
         {
           Statement s = con.createStatement();
-          s.executeQuery("select TRANSACTION_DATE, ENTRY_AMOUNT from capstone.data2014 " +
-            "where COMPANY_NUMBER='9' and ENTRY_AMOUNT_SIGN = 'p' " +
-            "order by TRANSACTION_DATE");
+          s.executeQuery("select MONTH(STR_TO_DATE(PROC_DATE,'%m/%d/%y')) AS TDATE, SUM(ENTRY_AMOUNT) AS AMT from capstone.data2014   "
+                  + "where COMPANY_NUMBER='9' and ENTRY_AMOUNT_SIGN = 'p' AND STR_TO_DATE(PROC_DATE,'%m/%d/%y') >=  '20140101' "
+                  + "AND STR_TO_DATE(PROC_DATE,'%m/%d/%y') <=  '20141231' "
+                  + "Group by MONTH(STR_TO_DATE(PROC_DATE,'%m/%d/%y'))");
             ResultSet rs = s.getResultSet();
             while (rs.next()) {
 
-                String dt = rs.getString("TRANSACTION_DATE");
-                String em = rs.getString("ENTRY_AMOUNT");
+                String dt = rs.getString("TDATE");
+                String em = rs.getString("AMT");
                    
                 OrgMonthly d1 = new OrgMonthly(dt,Double.parseDouble(em)); 
                 tempData.add(d1);
@@ -164,14 +167,17 @@ public class summary extends HttpServlet {
         try
         {
           Statement s = con.createStatement();
-          s.executeQuery("select TRANSACTION_DATE, ENTRY_AMOUNT from capstone.data2014 " +
-            "where COMPANY_NUMBER='9' and ENTRY_AMOUNT_SIGN = 'p' " +
-            "order by TRANSACTION_DATE");
+          s.executeQuery("SELECT b.mcc_category AS CATG, SUM(a.Total_Spending) AS AMT "
+                  + "FROM (SELECT MERCHANT_CATEGORY as mcc, SUM(ENTRY_AMOUNT) as 'Total_Spending' "
+                  + "FROM capstone.data2014 WHERE COMPANY_NUMBER = '9' AND ENTRY_AMOUNT_SIGN = 'p' "
+                  + "AND STR_TO_DATE(PROC_DATE,'%m/%d/%y') >=  '20140101' AND STR_TO_DATE(PROC_DATE,'%m/%d/%y') <=  '20141231' "
+                  + "GROUP BY MERCHANT_CATEGORY) a join capstone.mcc_code b on (a.mcc = b.mcc) "
+                  + "GROUP BY b.mcc_category");
             ResultSet rs = s.getResultSet();
             while (rs.next()) {
 
-                String dt = rs.getString("TRANSACTION_DATE");
-                String em = rs.getString("ENTRY_AMOUNT");
+                String dt = rs.getString("CATG");
+                String em = rs.getString("AMT");
                    
                 OrgCategory d1 = new OrgCategory(dt,Double.parseDouble(em)); 
                 tempData.add(d1);
@@ -191,7 +197,7 @@ public class summary extends HttpServlet {
     }
     
     public static Connection dbConnect() {
-        Connection con = null;
+        
         try
         {
           String strSshUser = "jason";                  // SSH loging username
@@ -204,7 +210,7 @@ public class summary extends HttpServlet {
           String strDbUser = "root";                    // database loging username
           String strDbPassword = "root";                    // database login password
 
-          summary.doSshTunnel(strSshUser, strSshPassword, strSshHost, nSshPort, strRemoteHost, nLocalPort, nRemotePort);
+          sess = summary.doSshTunnel(strSshUser, strSshPassword, strSshHost, nSshPort, strRemoteHost, nLocalPort, nRemotePort);
 
           Class.forName("com.mysql.jdbc.Driver");
           con = DriverManager.getConnection("jdbc:mysql://localhost:"+nLocalPort, strDbUser, strDbPassword);
@@ -222,6 +228,7 @@ public class summary extends HttpServlet {
     public static void dbClose(Connection con) {
         
         try {
+            sess.disconnect();
             con.close();
         } catch (SQLException ex) {
             Logger.getLogger(summary.class.getName()).log(Level.SEVERE, null, ex);
@@ -229,7 +236,7 @@ public class summary extends HttpServlet {
           
     }
     
-    static void doSshTunnel( String strSshUser, String strSshPassword, String strSshHost, int nSshPort, String strRemoteHost, int nLocalPort, int nRemotePort ) throws JSchException
+    static Session doSshTunnel( String strSshUser, String strSshPassword, String strSshHost, int nSshPort, String strRemoteHost, int nLocalPort, int nRemotePort ) throws JSchException
     {
         final JSch jsch = new JSch();
         Session session = jsch.getSession( strSshUser, strSshHost, 22 );
@@ -241,6 +248,8 @@ public class summary extends HttpServlet {
 
         session.connect();
         session.setPortForwardingL(nLocalPort, strRemoteHost, nRemotePort);
+        
+        return session;
     }
     
 
