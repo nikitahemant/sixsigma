@@ -28,6 +28,7 @@ import javax.servlet.http.HttpServletResponse;
 import model.AccCategory;
 import model.AccDaily;
 import model.AccMonthly;
+import model.AccSummary;
 import static server.summary.sess;
 
 /**
@@ -39,6 +40,7 @@ public class detail extends HttpServlet {
 
     public static Connection con = null;
     public static Session sess = null;
+    public static AccSummary accSummaryData;
     public static List<AccDaily> accDailyData;
     public static List<AccMonthly> accMonthlyData;
     public static List<AccCategory> accCategoryData;
@@ -46,6 +48,7 @@ public class detail extends HttpServlet {
     // Initiate this servlet by instantiating the model that it will use.
     @Override
     public void init() {
+        accSummaryData = null;
         accDailyData = new ArrayList<AccDaily>();
         accMonthlyData = new ArrayList<AccMonthly>();
         accCategoryData = new ArrayList<AccCategory>();
@@ -69,19 +72,25 @@ public class detail extends HttpServlet {
         Gson gson = new Gson();
         
         accDailyData = getAccDailyData(con);   
-	String jsonDailyString = gson.toJson(accDailyData);
-	response.setContentType("application/json");
-	response.getWriter().write(jsonDailyString);
+//	String jsonDailyString = gson.toJson(accDailyData);
+//	response.setContentType("application/json");
+//	response.getWriter().write(jsonDailyString);
    
         accMonthlyData = getAccMonthlyData(con);   
-	String jsonMonthlyString = gson.toJson(accMonthlyData);
-	response.setContentType("application/json");
-	response.getWriter().write(jsonMonthlyString);
+//	String jsonMonthlyString = gson.toJson(accMonthlyData);
+//	response.setContentType("application/json");
+//	response.getWriter().write(jsonMonthlyString);
         
         accCategoryData = getAccCategoryData(con);   
-	String jsonCategoryString = gson.toJson(accCategoryData);
+//	String jsonCategoryString = gson.toJson(accCategoryData);
+//	response.setContentType("application/json");
+//	response.getWriter().write(jsonCategoryString);
+        
+        accSummaryData = new AccSummary(accDailyData,accMonthlyData,accCategoryData);
+        
+        String jsonSummaryString = gson.toJson(accSummaryData);
 	response.setContentType("application/json");
-	response.getWriter().write(jsonCategoryString);
+	response.getWriter().write(jsonSummaryString);
         
         dbClose(con);
     }

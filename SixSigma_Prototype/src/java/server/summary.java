@@ -29,6 +29,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import model.OrgCategory;
 import model.OrgMonthly;
+import model.OrgSummary;
 
 /**
  * This class is the servlet for handling UI requests from homepage
@@ -42,10 +43,12 @@ public class summary extends HttpServlet {
     public static List<OrgDaily> orgDailyData;
     public static List<OrgMonthly> orgMonthlyData;
     public static List<OrgCategory> orgCategoryData;
+    public static OrgSummary orgSummaryData;
 
     // Initiate this servlet by instantiating the model that it will use.
     @Override
     public void init() {
+        orgSummaryData = null;
         orgDailyData = new ArrayList<OrgDaily>();
         orgMonthlyData = new ArrayList<OrgMonthly>();
         orgCategoryData = new ArrayList<OrgCategory>();
@@ -68,10 +71,11 @@ public class summary extends HttpServlet {
         con = dbConnect();
         Gson gson = new Gson();
         
+        
         orgDailyData = getOrgDailyData(con);   
-	String jsonDailyString = gson.toJson(orgDailyData);
-	response.setContentType("application/json");
-	response.getWriter().write(jsonDailyString);
+//	String jsonDailyString = gson.toJson(orgDailyData);
+//	response.setContentType("application/json");
+//	response.getWriter().write(jsonDailyString);
    
         orgMonthlyData = getOrgMonthlyData(con);   
 //	String jsonMonthlyString = gson.toJson(orgMonthlyData);
@@ -82,6 +86,12 @@ public class summary extends HttpServlet {
 //	String jsonCategoryString = gson.toJson(orgCategoryData);
 //	response.setContentType("application/json");
 //	response.getWriter().write(jsonCategoryString);
+        
+        orgSummaryData = new OrgSummary(orgDailyData,orgMonthlyData,orgCategoryData);
+        String jsonSummaryString = gson.toJson(orgSummaryData);
+	response.setContentType("application/json");
+	response.getWriter().write(jsonSummaryString);
+        
         System.out.println("Closing connection");
         dbClose(con);
     }
