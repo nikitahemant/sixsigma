@@ -52,7 +52,7 @@ public class OrgSummary {
         JSONArray catobj = new JSONArray();
         for (OrgCategory cat1 : category) {
             JSONObject cat = new JSONObject();
-            cat.put("category", cat1.getAmount());
+            cat.put("category", cat1.getCategory());
             cat.put("amount", cat1.getAmount());
             catobj.add(cat);
         }
