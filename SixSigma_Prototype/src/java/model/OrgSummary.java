@@ -46,7 +46,7 @@ public class OrgSummary {
         for (OrgCategory cat1 : category) {
             catobj.put(cat1.getCategory(), cat1.getAmount());
         }
-        output.put("category",category);
+        output.put("category",catobj);
         
         StringWriter out = new StringWriter();
         output.writeJSONString(out);
