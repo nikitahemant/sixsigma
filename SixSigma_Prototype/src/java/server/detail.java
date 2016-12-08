@@ -29,7 +29,6 @@ import model.AccCategory;
 import model.AccDaily;
 import model.AccMonthly;
 import model.AccSummary;
-import static server.summary.sess;
 
 /**
  * This class is the servlet for handling UI requests from homepage
@@ -88,11 +87,11 @@ public class detail extends HttpServlet {
         
         accSummaryData = new AccSummary(accDailyData,accMonthlyData,accCategoryData);
         
-        String jsonSummaryString = gson.toJson(accSummaryData);
+        String jsonSummaryString = accSummaryData.toJSON();
 	response.setContentType("application/json");
 	response.getWriter().write(jsonSummaryString);
         
-        dbClose(con);
+        
     }
     
     /**
