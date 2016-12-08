@@ -5,6 +5,7 @@
  */
 package model;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -17,8 +18,8 @@ public class AccSummary {
     private static List<AccCategory> category;
 
     public AccSummary(List<AccDaily> d, List<AccMonthly> m, List<AccCategory> c) {
-        this.daily = d;
-        this.monthly = m;
-        this.category = c;
+        this.daily = new ArrayList<AccDaily>(d);
+        this.monthly = new ArrayList<AccMonthly>(m);
+        this.category = new ArrayList<AccCategory>(c);
     }
 }

@@ -88,7 +88,7 @@ public class summary extends HttpServlet {
 //	response.getWriter().write(jsonCategoryString);
         
         orgSummaryData = new OrgSummary(orgDailyData,orgMonthlyData,orgCategoryData);
-        String jsonSummaryString = gson.toJson(orgSummaryData);
+        String jsonSummaryString = orgSummaryData.toJSON();
 	response.setContentType("application/json");
 	response.getWriter().write(jsonSummaryString);
         
