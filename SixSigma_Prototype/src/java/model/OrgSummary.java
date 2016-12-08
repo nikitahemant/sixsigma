@@ -9,6 +9,7 @@ import java.io.IOException;
 import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.List;
+import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
 /**
@@ -30,21 +31,30 @@ public class OrgSummary {
     {
         JSONObject output = new JSONObject();;
         
-        JSONObject dailyobj = new JSONObject();
+        JSONArray dailyobj = new JSONArray();
         for (OrgDaily daily1 : daily) {
-            dailyobj.put(daily1.getDate(), daily1.getAmount());
+            JSONObject da = new JSONObject();
+            da.put("date", daily1.getDate());
+            da.put("amount", daily1.getAmount());
+            dailyobj.add(da);
         }
         output.put("daily",dailyobj);
         
-        JSONObject monthlyobj = new JSONObject();
+        JSONArray monthlyobj = new JSONArray();
         for (OrgMonthly monthly1 : monthly) {
-            monthlyobj.put(monthly1.getMonth(), monthly1.getAmount());
+            JSONObject mon = new JSONObject();
+            mon.put("month",monthly1.getMonth());
+            mon.put("amount", monthly1.getAmount());
+            monthlyobj.add(mon);
         }
         output.put("monthly",monthlyobj);
         
-        JSONObject catobj = new JSONObject();
+        JSONArray catobj = new JSONArray();
         for (OrgCategory cat1 : category) {
-            catobj.put(cat1.getCategory(), cat1.getAmount());
+            JSONObject cat = new JSONObject();
+            cat.put("category", cat1.getAmount());
+            cat.put("amount", cat1.getAmount());
+            catobj.add(cat);
         }
         output.put("category",catobj);
         
