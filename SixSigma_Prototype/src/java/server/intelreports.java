@@ -89,23 +89,23 @@ public class intelreports extends HttpServlet {
         try
         {
           Statement s = con.createStatement();
-          s.executeQuery("SELECT a1.mcc_category AS CATG, a1.industry_average AS IAMT,a2.COMPANY9_average AS OAMT" +
-                "FROM" +
-                "(SELECT mcc_category,avg(ENTRY_AMOUNT) as 'industry_average'" +
-                "FROM capstone.data2014 JOIN capstone.mcc_code on MERCHANT_CATEGORY=mcc" +
-                "WHERE COMPANY_NUMBER in (SELECT COMPANY_NUMBER" +
-                "FROM capstone.comp_nacis_credit" +
-                "WHERE nacis_code= (select nacis_code" +
-                "from capstone.comp_nacis_credit" +
-                "where COMPANY_NUMBER='9') and credit_bucket=(select credit_bucket" +
-                "from capstone.comp_nacis_credit" +
-                "where COMPANY_NUMBER='9') and COMPANY_NUMBER<>'9')and ENTRY_AMOUNT_SIGN='P'" +
-                "GROUP BY mcc_category) a1" +
-                "LEFT JOIN (select mcc_category,avg(ENTRY_AMOUNT) as 'COMPANY9_average'" +
-                "FROM capstone.data2014 JOIN capstone.mcc_code on MERCHANT_CATEGORY=mcc" +
-                "where COMPANY_NUMBER='9' and ENTRY_AMOUNT_SIGN='P'" +
-                "group by mcc_category" +
-                ") a2 USING (mcc_category);");
+          s.executeQuery("SELECT a1.mcc_category AS CATG, a1.industry_average As IAMT, a2.COMPANY9_average AS OAMT " +
+"FROM " +
+" (SELECT mcc_category,avg(ENTRY_AMOUNT) as 'industry_average'" +
+" FROM capstone.data2014 JOIN capstone.mcc_code on MERCHANT_CATEGORY=mcc" +
+" WHERE COMPANY_NUMBER in (SELECT COMPANY_NUMBER" +
+" FROM capstone.comp_nacis_credit" +
+" WHERE nacis_code= (select nacis_code" +
+"				from capstone.comp_nacis_credit" +
+"				where COMPANY_NUMBER='9') and credit_bucket=(select credit_bucket" +
+"				from capstone.comp_nacis_credit" +
+"				where COMPANY_NUMBER='9') and COMPANY_NUMBER<>'9')and ENTRY_AMOUNT_SIGN='P'" +
+" GROUP BY mcc_category) a1 " +
+" LEFT JOIN (select mcc_category,avg(ENTRY_AMOUNT) as 'COMPANY9_average'" +
+" FROM capstone.data2014 JOIN capstone.mcc_code on MERCHANT_CATEGORY=mcc" +
+" where COMPANY_NUMBER='9' and ENTRY_AMOUNT_SIGN='P'" +
+" group by mcc_category" +
+") a2 USING (mcc_category)");
             ResultSet rs = s.getResultSet();
             while (rs.next()) {
 
@@ -113,7 +113,7 @@ public class intelreports extends HttpServlet {
                 String iamt = rs.getString("IAMT");
                 String oamt = rs.getString("OAMT");
                    
-                intelRebate d1 = new intelRebate(dt,Long.parseLong(iamt),Long.parseLong(oamt)); 
+                intelRebate d1 = new intelRebate(dt,Double.parseDouble(iamt),Double.parseDouble(oamt)); 
                 tempData.add(d1);
             }
             
