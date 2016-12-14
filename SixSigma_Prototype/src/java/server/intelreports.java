@@ -10,7 +10,6 @@ import com.jcraft.jsch.JSch;
 import com.jcraft.jsch.JSchException;
 import com.jcraft.jsch.Session;
 import java.io.IOException;
-import java.io.StringWriter;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
@@ -30,8 +29,6 @@ import model.AccCategory;
 import model.AccDaily;
 import model.AccMonthly;
 import model.intelRebate;
-import org.json.simple.JSONArray;
-import org.json.simple.JSONObject;
 
 /**
  * This class is the servlet for handling UI requests from homepage
@@ -68,38 +65,13 @@ public class intelreports extends HttpServlet {
         con = dbConnect();
         Gson gson = new Gson();
         
-        intelRebateData = getRebateData();   
-        
-        double indTotal =0;
-        double orgTotal=0;
-        
-        JSONObject output = new JSONObject();;
-        
-        JSONArray rebateObj = new JSONArray();
-        for (intelRebate rebate : intelRebateData) {
-            JSONObject rb = new JSONObject();
-            rb.put("category", rebate.getCategory());
-            rb.put("indamount", rebate.getIndAmount());
-            rb.put("orgamount", rebate.getOrgAmount());
-            indTotal += rebate.getIndAmount();
-            orgTotal += rebate.getOrgAmount();
-            rebateObj.add(rb);
-        }
-        output.put("rebate",rebateObj);
-        
-        JSONObject rb = new JSONObject();
-        rb.put("indtotal", indTotal);
-        rb.put("orgtotal", orgTotal);
-        output.put("total",rb);
-        
-        StringWriter out = new StringWriter();
-        output.writeJSONString(out);
-        
-	String jsonRebateString = out.toString();
+        intelRebateData = getRebateData(); 
+        dbClose();
+	String jsonRebateString = gson.toJson(intelRebateData);
 	response.setContentType("application/json");
 	response.getWriter().write(jsonRebateString);
    
-        dbClose();
+        
     }
     
     /**
@@ -141,8 +113,9 @@ public class intelreports extends HttpServlet {
                 String dt = rs.getString("CATG");
                 String iamt = rs.getString("IAMT");
                 String oamt = rs.getString("OAMT");
-                   
-                intelRebate d1 = new intelRebate(dt,Double.parseDouble(iamt),Double.parseDouble(oamt)); 
+                long iamtd = Math.round(Double.parseDouble(iamt));
+                long oamtd = Math.round(Double.parseDouble(oamt));
+                intelRebate d1 = new intelRebate(dt,iamtd * 0.01,oamtd * 0.01); 
                 tempData.add(d1);
             }
             

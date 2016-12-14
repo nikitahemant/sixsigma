@@ -71,20 +71,10 @@ public class detail extends HttpServlet {
         Gson gson = new Gson();
         
         accDailyData = getAccDailyData(con);   
-//	String jsonDailyString = gson.toJson(accDailyData);
-//	response.setContentType("application/json");
-//	response.getWriter().write(jsonDailyString);
-   
         accMonthlyData = getAccMonthlyData(con);   
-//	String jsonMonthlyString = gson.toJson(accMonthlyData);
-//	response.setContentType("application/json");
-//	response.getWriter().write(jsonMonthlyString);
-        
         accCategoryData = getAccCategoryData(con);   
-//	String jsonCategoryString = gson.toJson(accCategoryData);
-//	response.setContentType("application/json");
-//	response.getWriter().write(jsonCategoryString);
-        
+
+        dbClose(con);
         accSummaryData = new AccSummary(accDailyData,accMonthlyData,accCategoryData);
         
         String jsonSummaryString = accSummaryData.toJSON();
@@ -119,7 +109,7 @@ public class detail extends HttpServlet {
                 String dt = rs.getString("TDATE");
                 String em = rs.getString("AMT");
                    
-                AccDaily d1 = new AccDaily(dt,Long.parseLong(em)); 
+                AccDaily d1 = new AccDaily(dt,Double.parseDouble(em)); 
                 tempData.add(d1);
             }
             
@@ -152,7 +142,7 @@ public class detail extends HttpServlet {
                 String dt = rs.getString("TDATE");
                 String em = rs.getString("AMT");
                    
-                AccMonthly d1 = new AccMonthly(dt,Long.parseLong(em)); 
+                AccMonthly d1 = new AccMonthly(dt,Double.parseDouble(em)); 
                 tempData.add(d1);
             }
             
@@ -188,7 +178,7 @@ public class detail extends HttpServlet {
                 String dt = rs.getString("CATG");
                 String em = rs.getString("AMT");
                    
-                AccCategory d1 = new AccCategory(dt,Long.parseLong(em)); 
+                AccCategory d1 = new AccCategory(dt,Double.parseDouble(em)); 
                 tempData.add(d1);
             }
             

@@ -5,7 +5,6 @@
  */
 package server;
 
-import server.Proxy;
 import com.google.gson.Gson;
 import com.jcraft.jsch.JSch;
 import com.jcraft.jsch.JSchException;
@@ -73,27 +72,18 @@ public class summary extends HttpServlet {
         
         
         orgDailyData = getOrgDailyData(con);   
-//	String jsonDailyString = gson.toJson(orgDailyData);
-//	response.setContentType("application/json");
-//	response.getWriter().write(jsonDailyString);
-   
-        orgMonthlyData = getOrgMonthlyData(con);   
-//	String jsonMonthlyString = gson.toJson(orgMonthlyData);
-//	response.setContentType("application/json");
-//	response.getWriter().write(jsonMonthlyString);
-        
+        orgMonthlyData = getOrgMonthlyData(con);           
         orgCategoryData = getOrgCategoryData(con);   
-//	String jsonCategoryString = gson.toJson(orgCategoryData);
-//	response.setContentType("application/json");
-//	response.getWriter().write(jsonCategoryString);
+        
+        dbClose(con);
         
         orgSummaryData = new OrgSummary(orgDailyData,orgMonthlyData,orgCategoryData);
         String jsonSummaryString = orgSummaryData.toJSON();
 	response.setContentType("application/json");
 	response.getWriter().write(jsonSummaryString);
         
-        System.out.println("Closing connection");
-        dbClose(con);
+        
+        
     }
     
     /**

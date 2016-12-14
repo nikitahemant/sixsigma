@@ -95,7 +95,7 @@ var DATA = {
 				 "<span style='color:#c65533;font:12px,roboto;'>"+dataPoint2+"</span></div>";
 	 },
 	/*Makes ajax call to servlet and download data */
-	getStudentData : function(){
+	getTransactionData : function(){
 		
 			$.ajax({
 			
@@ -115,5 +115,5 @@ google.load("visualization", "1", {packages:["corechart"]});
 	
 $(document).ready(function(){
 	
-	DATA.getStudentData();
+	DATA.getTransactionData();
 });

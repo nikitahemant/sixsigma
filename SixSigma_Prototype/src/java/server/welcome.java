@@ -6,7 +6,6 @@
 package server;
 
 import java.io.IOException;
-import java.io.PrintWriter;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -19,14 +18,6 @@ import javax.servlet.http.HttpServletResponse;
  */
 @WebServlet(name = "welcome", urlPatterns = {"/welcome"})
 public class welcome extends HttpServlet {
-
-    databaseModel dbm = null;  // The "business model" for this app
-
-    // Initiate this servlet by instantiating the model that it will use.
-    @Override
-    public void init() {
-        dbm = new databaseModel();
-    }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
     /**
