@@ -26,9 +26,11 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import model.DBProperties;
 import model.OrgCategory;
 import model.OrgMonthly;
 import model.OrgSummary;
+
 
 /**
  * This class is the servlet for handling UI requests from homepage
@@ -200,20 +202,14 @@ public class summary extends HttpServlet {
         
         try
         {
-          String strSshUser = "jason";                  // SSH loging username
-          String strSshPassword = "jason";                   // SSH login password
-          String strSshHost = "128.2.144.201";          // hostname or ip or SSH server
-          int nSshPort = 22;                                    // remote SSH host port number
-          String strRemoteHost = "localhost";  // hostname or ip of your database server
-          int nLocalPort = 3366;                                // local port number use to bind SSH tunnel
-          int nRemotePort = 3306;                               // remote port number of your database 
-          String strDbUser = "root";                    // database loging username
-          String strDbPassword = "root";                    // database login password
-
-          sess = summary.doSshTunnel(strSshUser, strSshPassword, strSshHost, nSshPort, strRemoteHost, nLocalPort, nRemotePort);
+          // database login password
+          sess = detail.doSshTunnel(DBProperties.getStrSshUser(), DBProperties.getStrSshPassword(), DBProperties.getStrSshHost(), 
+                  DBProperties.getnSshPort(), DBProperties.getStrRemoteHost(), DBProperties.getnLocalPort(),
+                  DBProperties.getnRemotePort());
 
           Class.forName("com.mysql.jdbc.Driver");
-          con = DriverManager.getConnection("jdbc:mysql://localhost:"+nLocalPort, strDbUser, strDbPassword);
+          con = DriverManager.getConnection("jdbc:mysql://localhost:"+DBProperties.getnLocalPort(), 
+                  DBProperties.getStrDbUser(), DBProperties.getStrDbPassword());
           
         }
         catch(Exception e )
